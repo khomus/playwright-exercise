@@ -30,4 +30,21 @@ test.describe('Automation Exercise Suite', () => {
     await expect(cartRows).toHaveCount(2);
   });
 
+  test('Test 3 — Contact Form Submission', async ({ page, homePage, contactPage }) => {
+    await homePage.clickContactUs();
+    
+    await contactPage.fillContactForm({
+      name: 'Aliaksej',
+      email: 'test@example.com',
+      subject: 'Bug Report',
+      message: 'Hello, this is a test message.'
+    });
+
+    // processing JS Alert before click
+    page.on('dialog', dialog => dialog.accept());
+    
+    await contactPage.submit();
+    const success = await contactPage.getSuccessMessageLocator();
+    await expect(success).toBeVisible();
+  });
 });
