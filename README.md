@@ -32,12 +32,13 @@ The goal of this project is to demonstrate:
 
 1. Clone the repository:
 git clone https://github.com/khomus/playwright-exercise.git
+
 cd playwright-exercise
 
-2. Install dependencies:
+3. Install dependencies:
 npm install
 
-3. Install Playwright browsers:
+4. Install Playwright browsers:
 npx playwright install chromium
 
 ---
@@ -48,7 +49,7 @@ Run all tests:
 npx playwright test
 
 Run a specific test file:
-npx playwright test tests/product-search.spec.ts
+npx playwright test tests/exercise.spec.ts
 
 Run in UI mode:
 npx playwright test --ui
