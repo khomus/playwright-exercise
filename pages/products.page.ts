@@ -12,6 +12,8 @@ export class ProductsPage extends BasePage {
   }
 
   async getVisibleProductNames() {
+    // Wait at least one header to become visible
+    await this.productTitles.first().waitFor({ state: 'visible' }); 
     return this.productTitles.allInnerTexts();
   }
 

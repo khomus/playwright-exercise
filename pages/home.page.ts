@@ -1,7 +1,7 @@
 import { BasePage } from './base.page';
 
 export class HomePage extends BasePage {
-  private readonly productsLink = this.page.getByRole('link', { name: ' Products' });
+  private readonly productsLink = this.page.getByRole('link', { name: /products/i });
   private readonly contactUsLink = this.page.getByRole('link', { name: 'Contact us' });
   private readonly cartLink = this.page.getByRole('link', { name: 'Cart' });
 
@@ -15,5 +15,13 @@ export class HomePage extends BasePage {
 
   async clickCart() {
     await this.cartLink.click();
+  }
+
+  async acceptCookiesIfVisible() {
+    const acceptBtn = this.page.getByRole('button', { name: /consent|accept/i });
+  
+    if (await acceptBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+      await acceptBtn.click();
+    }
   }
 }

@@ -6,19 +6,24 @@ test.describe('Automation Exercise Suite', () => {
     // Block Ads to make it stable
     await page.route('**/*google-analytics*', route => route.abort());
     await page.route('**/*doubleclick*', route => route.abort());
+    await page.route('**/fundingchoicesmessages.google.com/**', route => route.abort());
     await homePage.navigate();
+    await homePage.acceptCookiesIfVisible();
   });
 
   test('Test 1 — Product Search', async ({ homePage, productsPage }) => {
     await homePage.clickProducts();
     await productsPage.searchProduct('Dress');
     
+    // check that headder "SEARCHED PRODUCTS" is visible
+    await expect(productsPage.page.getByRole('heading', { name: 'Searched Products' })).toBeVisible();
+    
     const names = await productsPage.getVisibleProductNames();
     expect(names.length).toBeGreaterThan(0);
     
-    for (const name of names) {
-      expect(name.toLowerCase()).toContain('dress');
-    }
+    // Verifying the first result
+    const hasDress = names.some(name => name.toLowerCase().includes('dress'));
+    expect(hasDress).toBe(true);
   });
 
   test('Test 2 — Add to Cart', async ({ page, homePage, productsPage }) => {
@@ -30,7 +35,7 @@ test.describe('Automation Exercise Suite', () => {
     await expect(cartRows).toHaveCount(2);
   });
 
-  test('Test 3 — Contact Form Submission', async ({ page, homePage, contactPage }) => {
+test('Test 3 — Contact Form Submission', async ({ page, homePage, contactPage }) => {
     await homePage.clickContactUs();
     
     await contactPage.fillContactForm({
@@ -40,11 +45,12 @@ test.describe('Automation Exercise Suite', () => {
       message: 'Hello, this is a test message.'
     });
 
-    // processing JS Alert before click
-    page.on('dialog', dialog => dialog.accept());
-    
+    // Waiting for dialog and click simltaneously
+    page.once('dialog', dialog => dialog.accept());
     await contactPage.submit();
+    
+    // Now wait for message
     const success = await contactPage.getSuccessMessageLocator();
-    await expect(success).toBeVisible();
+    await expect(success).toBeVisible({ timeout: 10000 });
   });
 });

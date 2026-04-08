@@ -6,7 +6,7 @@ export class ContactPage extends BasePage {
   private readonly subjectInput = this.page.getByPlaceholder('Subject');
   private readonly messageInput = this.page.getByPlaceholder('Your Message Here');
   private readonly submitButton = this.page.locator('input[name="submit"]');
-  private readonly successMessage = this.page.locator('.status.alert-success');
+  private readonly successMessage = this.page.locator('.status.alert-success').filter({ hasText: 'Success! Your details have been submitted successfully.' });
 
   async fillContactForm(data: { name: string; email: string; subject: string; message: string }) {
     await this.nameInput.fill(data.name);
@@ -16,6 +16,7 @@ export class ContactPage extends BasePage {
   }
 
   async submit() {
+    await this.submitButton.hover();
     await this.submitButton.click();
   }
 
